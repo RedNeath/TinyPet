@@ -2,6 +2,8 @@ package foo;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Random;
@@ -32,10 +34,51 @@ import com.google.appengine.repackaged.com.google.datastore.v1.CompositeFilter;
 import com.google.appengine.repackaged.com.google.datastore.v1.Projection;
 import com.google.appengine.repackaged.com.google.datastore.v1.PropertyFilter;
 
-@WebServlet(name = "PetQuery", urlPatterns = { "/pquery" })
-public class PetitionQuery extends HttpServlet {
+import com.google.api.server.spi.config.Api;
+import com.google.api.server.spi.config.ApiMethod;
+import com.google.api.server.spi.config.ApiNamespace;
+import com.google.api.server.spi.config.ApiMethod.HttpMethod;
+import com.google.appengine.api.datastore.Transaction;
 
-	@Override
+@Api(
+	name = "tinyPetApi",
+	version = "ca-marche-sur-mon-pc",
+	audiences = "927375242383-t21v9ml38tkh2pr30m4hqiflkl3jfohl.apps.googleusercontent.com",
+	clientIds = {
+		"927375242383-t21v9ml38tkh2pr30m4hqiflkl3jfohl.apps.googleusercontent.com",
+        "927375242383-jm45ei76rdsfv7tmjv58tcsjjpvgkdje.apps.googleusercontent.com"
+	},
+	namespace = @ApiNamespace(
+		ownerDomain = "helloworld.example.com",
+		ownerName = "helloworld.example.com",
+		packagePath = ""
+	)
+)
+public class PetitionQuery {
+	@ApiMethod(name="create-petition", httpMethod=HttpMethod.POST)
+	public Entity createPetition(PetitionCreate petitionCreate) {
+		Calendar cal = Calendar.getInstance(); 
+		cal.add(Calendar.MONTH, 6);
+		Date endDate = cal.getTime();
+
+		Entity petition = new Entity("Petition");
+		petition.setProperty("author", petitionCreate.author);
+		petition.setProperty("name", petitionCreate.name);
+		petition.setProperty("description", petitionCreate.description);
+		petition.setProperty("signature_target", petitionCreate.signatureTarget);
+		petition.setProperty("beg_date", new Date());
+		petition.setProperty("end_date", endDate);
+
+		DatastoreService datastoreService = DatastoreServiceFactory.getDatastoreService();
+		Transaction transaction = datastoreService.beginTransaction();
+		datastoreService.put(petition);
+		transaction.commit();
+
+		return petition;
+	}
+
+
+	/* @Override
 	public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
 
 		response.setContentType("text/html");
@@ -76,5 +119,5 @@ public class PetitionQuery extends HttpServlet {
 		}
 
 		
-	}
+	} */
 }
