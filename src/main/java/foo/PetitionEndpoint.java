@@ -26,6 +26,7 @@ import com.google.appengine.api.datastore.KeyRange;
 import com.google.appengine.api.datastore.PreparedQuery;
 import com.google.appengine.api.datastore.PropertyProjection;
 import com.google.appengine.api.datastore.Query;
+import com.google.appengine.api.datastore.Query.SortDirection;
 import com.google.appengine.api.datastore.Query.CompositeFilterOperator;
 import com.google.appengine.api.datastore.Query.FilterOperator;
 import com.google.appengine.api.datastore.Query.FilterPredicate;
@@ -75,6 +76,16 @@ public class PetitionEndpoint {
 		transaction.commit();
 
 		return petition;
+	}
+	
+	@ApiMethod(name="recentPetitions", httpMethod=HttpMethod.GET)
+	public List<Entity> recentPetitions() {
+		Query q = new Query("Petition").addSort("beg_date", SortDirection.DESCENDING);
+
+		DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+		PreparedQuery pq = datastore.prepare(q);
+		List<Entity> petitions = pq.asList(FetchOptions.Builder.withLimit(100));
+		return petitions;
 	}
 
 
