@@ -54,8 +54,8 @@ import com.google.appengine.api.datastore.Transaction;
 		packagePath = ""
 	)
 )
-public class PetitionQuery {
-	@ApiMethod(name="create-petition", httpMethod=HttpMethod.POST)
+public class PetitionEndpoint {
+	@ApiMethod(name="createPetition", httpMethod=HttpMethod.POST)
 	public Entity createPetition(PetitionCreate petitionCreate) {
 		Calendar cal = Calendar.getInstance(); 
 		cal.add(Calendar.MONTH, 6);

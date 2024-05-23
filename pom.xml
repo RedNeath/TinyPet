@@ -18,8 +18,8 @@
   <packaging>war</packaging>
   <version>1.0-SNAPSHOT</version>
 
-  <groupId>RedNeath</groupId>
-  <artifactId>TinyPet</artifactId>
+  <groupId>momo54</groupId>
+  <artifactId>WebAndCloud</artifactId>
 
   <!--
     The parent pom defines common style checks and testing strategies for our samples.
@@ -42,7 +42,7 @@
 
     <checkstyle.skip>true</checkstyle.skip>
     
-    <endpoints.project.id>cloudmodule414213</endpoints.project.id>
+    <endpoints.project.id>cloudmodule-414213</endpoints.project.id>
   </properties>
 
   <dependencies>
