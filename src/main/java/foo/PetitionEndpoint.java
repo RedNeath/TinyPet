@@ -130,6 +130,17 @@ public class PetitionEndpoint {
 		return pr.asList(FetchOptions.Builder.withDefaults());
 	}
 
+	@ApiMethod(name="petitionSignatories", httpMethod=HttpMethod.GET)
+	public List<Entity> petitionSignatories(@Named("petition") long petition) {
+		Query q = new Query("Signature")
+			.setFilter(new FilterPredicate("petition", FilterOperator.EQUAL, petition));
+		
+		DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+		PreparedQuery pq = datastore.prepare(q);
+
+		return pq.asList(FetchOptions.Builder.withDefaults());
+	}
+
 
 	/* @Override
 	public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {

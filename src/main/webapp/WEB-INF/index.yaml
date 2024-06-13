@@ -11,4 +11,3 @@ indexes:
   - name: user
     direction: asc
   - name: date
-    direction: desc
