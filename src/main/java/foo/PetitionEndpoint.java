@@ -2,6 +2,7 @@ package foo;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashSet;
@@ -12,7 +13,6 @@ import java.util.Set;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
@@ -38,7 +38,9 @@ import com.google.appengine.repackaged.com.google.datastore.v1.PropertyFilter;
 import com.google.api.server.spi.config.Api;
 import com.google.api.server.spi.config.ApiMethod;
 import com.google.api.server.spi.config.ApiNamespace;
+import com.google.api.server.spi.config.Named;
 import com.google.api.server.spi.config.ApiMethod.HttpMethod;
+import com.google.api.server.spi.response.BadRequestException;
 import com.google.appengine.api.datastore.Transaction;
 
 @Api(
@@ -69,6 +71,7 @@ public class PetitionEndpoint {
 		petition.setProperty("signature_target", petitionCreate.signatureTarget);
 		petition.setProperty("beg_date", new Date());
 		petition.setProperty("end_date", endDate);
+		petition.setProperty("tags", petitionCreate.tags);
 
 		DatastoreService datastoreService = DatastoreServiceFactory.getDatastoreService();
 		Transaction transaction = datastoreService.beginTransaction();
@@ -86,6 +89,20 @@ public class PetitionEndpoint {
 		PreparedQuery pq = datastore.prepare(q);
 		List<Entity> petitions = pq.asList(FetchOptions.Builder.withLimit(100));
 		return petitions;
+	}
+
+	@ApiMethod(name="petitionsWithTags", httpMethod=HttpMethod.GET)
+	public List<Entity> petitionsWithTags(HttpServletRequest request) throws BadRequestException {
+		if (request.getParameter("tags") == null) throw new BadRequestException("Not enough tags", "Must have at least one tag");
+		List<String> parsedTags = new ArrayList<>(Arrays.asList(request.getParameter("tags").split(" ")));
+		Query q = new Query("Petition")
+			.setFilter(new FilterPredicate("tags", FilterOperator.IN, parsedTags))
+			.addSort("beg_date", SortDirection.DESCENDING);
+
+		DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+		PreparedQuery pq = datastore.prepare(q);
+		
+		return pq.asList(FetchOptions.Builder.withLimit(100));
 	}
 
 
