@@ -9,6 +9,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Random;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -103,6 +104,30 @@ public class PetitionEndpoint {
 		PreparedQuery pq = datastore.prepare(q);
 		
 		return pq.asList(FetchOptions.Builder.withLimit(100));
+	}
+
+	@ApiMethod(name="petitionsSignedByUser", httpMethod=HttpMethod.GET)
+	public List<Entity> petitionsSignedByUser(@Named("username") String username) {
+		Query q = new Query("Signature")
+			.setFilter(new FilterPredicate("user", FilterOperator.EQUAL, username))
+			.addSort("date", SortDirection.DESCENDING);
+
+		DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+		PreparedQuery pq = datastore.prepare(q);
+		List<Entity> signatures = pq.asList(FetchOptions.Builder.withDefaults());
+
+		if (signatures.isEmpty()) {
+			return new ArrayList<>();
+		}
+		List<Key> petitionIds = signatures.stream()
+			.map(signature -> KeyFactory.createKey("Petition", (Long) signature.getProperty("petition")))
+			.collect(Collectors.toList());
+
+		Query r = new Query("Petition")
+			.setFilter(new FilterPredicate("__key__", FilterOperator.IN, petitionIds));
+		
+		PreparedQuery pr = datastore.prepare(r);
+		return pr.asList(FetchOptions.Builder.withDefaults());
 	}
 
 

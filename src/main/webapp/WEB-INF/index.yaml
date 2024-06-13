@@ -5,3 +5,10 @@ indexes:
     direction: asc
   - name: beg_date
     direction: desc
+
+- kind: Signature
+  properties:
+  - name: user
+    direction: asc
+  - name: date
+    direction: desc
