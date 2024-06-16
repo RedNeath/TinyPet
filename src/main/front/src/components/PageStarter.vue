@@ -17,7 +17,7 @@
             {{ "Go back to " + breadcrumbs[breadcrumbs.length - 2].label }}
         </RouterLink>
     </div>
-    <h1 class="mt-7 text-2xl font-bold text-slate-900 dark:text-slate-200">{{ title }}</h1>
+    <h1 class="mt-7 text-2xl font-bold text-slate-900 dark:text-slate-200 md:text-3xl">{{ title }}</h1>
 </template>
 
 <script>

@@ -6,7 +6,8 @@ import RecentPetitionsView from './components/views/RecentPetitionsView.vue'
 import './index.css'
 
 const routes = [
-    { path: "/", component: RecentPetitionsView }
+    { path: "/", name: 'home', component: RecentPetitionsView },
+    { path: "/petition/:petitionId", name: 'petition', component: RecentPetitionsView },
 ];
 
 const router = createRouter({
