@@ -1,5 +1,5 @@
 <template>
-  <header class="bg-slate-50 dark:bg-slate-900">
+  <header class="bg-slate-50 dark:bg-slate-900 border-b dark:border-slate-700">
     <nav class="mx-auto grid grid-cols-2 gap-y-6 md:grid-cols-7 max-w-7xl items-center justify-between p-4 md:p-6 lg:px-8" aria-label="Global">
       <div class="flex lg:flex-1">
         <a href="/" class="-m-1.5 p-1.5 flex">
