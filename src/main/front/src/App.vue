@@ -1,5 +1,5 @@
 <template>
-  <NavigationBar/>
+  <NavigationBar />
   <main class="px-4 md:px-16 lg:px-48">
     <RouterView/>
   </main>

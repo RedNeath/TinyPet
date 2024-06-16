@@ -2,11 +2,11 @@
   <header class="bg-slate-50 dark:bg-slate-900 border-b dark:border-slate-700">
     <nav class="mx-auto grid grid-cols-2 gap-y-6 md:grid-cols-7 max-w-7xl items-center justify-between p-4 md:p-6 lg:px-8" aria-label="Global">
       <div class="flex lg:flex-1">
-        <a href="/" class="-m-1.5 p-1.5 flex">
+        <RouterLink :to="{ name: 'home' }" class="-m-1.5 p-1.5 flex">
           <span class="sr-only">TinyPet</span>
           <img class="h-8 w-auto" src="../assets/tinypet.png" alt="" />
           <span class="ml-3 text-2xl font-bold text-slate-900 dark:text-slate-200">TinyPet</span>
-        </a>
+        </RouterLink>
       </div>
       <div class="flex md:hidden ml-auto">
         <!-- To replace with google connection when implemented -->
@@ -27,11 +27,11 @@
               </svg>
             </span>
           </div>
-          <input type="text" name="research" id="research" class="block w-full rounded-md border-0 py-1.5 pl-8 pr-2 md:pr-16 text-slate-900 ring-1 ring-inset ring-gray-300 placeholder:text-slate-400 focus:ring-2 focus:ring-inset focus:ring-teal-400 sm:text-sm sm:leading-6 bg-white dark:bg-slate-100" placeholder="Browse for petitions...">
+          <input type="text" name="research" v-model="searchedTags" id="research" class="block w-full rounded-md border-0 py-1.5 pl-8 pr-2 md:pr-16 text-slate-900 ring-1 ring-inset ring-gray-300 placeholder:text-slate-400 focus:ring-2 focus:ring-inset focus:ring-teal-400 sm:text-sm sm:leading-6 bg-white dark:bg-slate-100" placeholder="Browse for petitions...">
           <div class="hidden md:block absolute inset-y-0 right-0 flex items-center">
             <label for="search-action" class="sr-only">Search</label>
             <div class="h-full p-[5px]">
-              <button id="search-action" name="search-action" class="h-full rounded-md border-0 bg-teal-600 text-slate-200 focus:ring-2 focus:ring-teal-400 hover:bg-teal-500 text-xs px-2">Search</button>
+              <button id="search-action" @click="search" name="search-action" class="h-full rounded-md border-0 bg-teal-600 text-slate-200 focus:ring-2 focus:ring-teal-400 hover:bg-teal-500 text-xs px-2">Search</button>
             </div>
           </div>
         </div>
@@ -51,6 +51,20 @@
 
 <script>
 export default {
-  name: 'NavigationBar'
+  name: 'NavigationBar',
+
+  data() {
+    return {
+      searchedTags: "",
+    };
+  },
+
+  methods: {
+    search() {
+      if (this.searchedTags !== "") {
+        this.$router.push({ name: "search", params: { tags: this.searchedTags }});
+      }
+    }
+  }
 }
 </script>
