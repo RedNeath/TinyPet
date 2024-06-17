@@ -17,8 +17,11 @@
             {{ "Go back to " + breadcrumbs[breadcrumbs.length - 2].label }}
         </RouterLink>
     </div>
+    <div id="page-tags" v-if="tags.length > 0" class="hidden md:flex mt-7 mb-1">
+        <TagBadge v-for="tag in tags" :key="tag" :label="tag" :mobile="false"></TagBadge>
+    </div>
     <div class="flex justify-between">
-        <h1 class="mt-7 text-2xl font-bold text-slate-900 dark:text-slate-200 md:text-3xl">{{ title }}</h1>
+        <h1 :class="{ 'mt-7 text-2xl font-bold text-slate-900 dark:text-slate-200 md:text-3xl': true, 'md:mt-0': tags.length > 0 }">{{ title }}</h1>
         <div class="hidden md:flex my-auto">
             <button v-for="action in actions" :key="action" @click="action.trigger" class="ml-2 rounded-md border-0 bg-teal-600 text-slate-200 focus:ring-2 focus:ring-teal-400 hover:bg-teal-500 font-medium text-base py-1.5 px-4">
                 {{ action.label }}
@@ -29,14 +32,21 @@
 
 <script>
 import { RouterLink } from 'vue-router';
+import TagBadge from './TagBadge.vue';
 
 export default {
     name: 'PageStarter',
     components: {
         RouterLink,
+        TagBadge,
     },
 
     props: {
+        tags: {
+            type: Array,
+            required: false,
+            default: new Array()
+        },
         title: String,
         breadcrumbs: Array,
         actions: {

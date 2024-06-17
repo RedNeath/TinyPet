@@ -1,5 +1,5 @@
 <template>
-    <PageStarter title="Matching petitions" :breadcrumbs="[{ label: 'Home', path: '/' }, { label: 'Petitions by tag', path: '/search/' + this.$route.params.tags }]" />
+    <PageStarter :title="'Matching petitions for tag(s) \'' + this.$route.params.tags + '\''" :breadcrumbs="[{ label: 'Home', path: '/' }, { label: 'Petitions by tag', path: '/search/' + this.$route.params.tags }]" />
     <PetitionList :petitions="petitions" />
 </template>
 

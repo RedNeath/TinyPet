@@ -2,17 +2,13 @@
     <div id="petition-container" class="md:pt-1">
         <div v-for="petition in petitions" :key="petition.key" class="border dark:border-slate-600 dark:bg-slate-700 rounded-lg p-3 mt-4 md:mt-3 md:pb-5 md:px-1 shadow dark:shadow-md md:border-0 md:border-b md:dark:bg-slate-800 md:shadow-none md:rounded-none">
             <div class="flex md:hidden overflow-x-auto">
-                <span v-for="tag in petition.properties.tags" :key="tag" class="inline-flex whitespace-nowrap flex-nowrap items-center rounded-full bg-teal-100 dark:bg-teal-900 px-2 py-1 text-xs font-medium text-slate-600 dark:text-slate-300 ring-1 ring-inset ring-teal-500/10 dark:ring-teal-100/10 mr-1 mb-1">
-                    {{ tag }}
-                </span>
+                <TagBadge :link="{ name: 'search', params: { tags: tag }}" v-for="tag in petition.properties.tags" :key="tag" :label="tag" :mobile="true"></TagBadge>
             </div>
             <div class="flex justify-between items-center">
                 <div class="md:flex">
                     <RouterLink :to="{ name: 'petition', params: { petitionId: petition.key.id }}" class="text-xl font-medium dark:text-slate-100 md:text-2xl md:hover:underline md:hover:text-teal-500">{{ petition.properties.name }}</RouterLink>
                     <div class="hidden md:flex ml-3">
-                        <span v-for="tag in petition.properties.tags" :key="tag" class="inline-flex whitespace-nowrap flex-nowrap items-center rounded-full bg-teal-100 dark:bg-teal-900 px-1.5 py-0.5 text-xs font-medium text-slate-600 dark:text-slate-300 ring-1 ring-inset ring-teal-500/10 dark:ring-teal-100/10 mr-1 mt-1 mb-2">
-                            {{ tag }}
-                        </span>
+                        <TagBadge :link="{ name: 'search', params: { tags: tag }}" v-for="tag in petition.properties.tags" :key="tag" :label="tag" :mobile="false"></TagBadge>
                     </div>
                 </div>
                 <button class="h-full ml-2 rounded-md border-0 bg-teal-600 text-slate-200 focus:ring-2 focus:ring-teal-400 hover:bg-teal-500 text-sm font-medium py-1 px-3 flex items-center md:text-base md:py-1.5 md:px-4">
@@ -42,8 +38,15 @@
 </template>
 
 <script>
+import { RouterLink } from 'vue-router';
+import TagBadge from './TagBadge.vue';
+
 export default {
     name: 'PetitionList',
+    components: {
+        RouterLink,
+        TagBadge,
+    },
 
     props: {
         petitions: Array

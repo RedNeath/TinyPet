@@ -27,7 +27,7 @@
               </svg>
             </span>
           </div>
-          <input type="text" name="research" v-model="searchedTags" id="research" class="block w-full rounded-md border-0 py-1.5 pl-8 pr-2 md:pr-16 text-slate-900 ring-1 ring-inset ring-gray-300 placeholder:text-slate-400 focus:ring-2 focus:ring-inset focus:ring-teal-400 sm:text-sm sm:leading-6 bg-white dark:bg-slate-100" placeholder="Browse for petitions...">
+          <input type="text" name="research" v-model="searchedTags" id="research" @keyup.enter="search" class="block w-full rounded-md border-0 py-1.5 pl-8 pr-2 md:pr-16 text-slate-900 ring-1 ring-inset ring-gray-300 placeholder:text-slate-400 focus:ring-2 focus:ring-inset focus:ring-teal-400 sm:text-sm sm:leading-6 bg-white dark:bg-slate-100" placeholder="Browse for petitions...">
           <div class="hidden md:block absolute inset-y-0 right-0 flex items-center">
             <label for="search-action" class="sr-only">Search</label>
             <div class="h-full p-[5px]">
