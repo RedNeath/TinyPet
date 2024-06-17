@@ -147,4 +147,16 @@ public class PetitionEndpoint {
 
 		return signature;
 	}
+
+	@ApiMethod(name="petition", httpMethod=HttpMethod.GET)
+	public Entity petition(@Named("petition") long petition) {
+		DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+		Key key = KeyFactory.createKey("Petition", petition);
+		Query q = new Query("Petition").setFilter(new FilterPredicate("__key__", FilterOperator.EQUAL, key));
+
+		PreparedQuery pq = datastore.prepare(q);
+		Entity petitionEntity = pq.asSingleEntity();
+		
+		return petitionEntity;
+	}
 }
