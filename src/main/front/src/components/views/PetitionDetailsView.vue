@@ -3,10 +3,10 @@
         :tags="petition.properties.tags"
         :title="petition.properties.name" 
         :breadcrumbs="[{ label: 'Home', path: '/' }, { label: petition.properties.name, path: '/petition/' + petition.key.id }]" 
-        :actions="[{ label: 'Sign', trigger: signPetition }]"
+        :actions="hasSigned? []: [{ label: 'Sign', trigger: signPetition }]"
     />
     <TagBadge v-for="tag in petition.properties.tags" :key="tag" :label="tag" :mobile="true" class="md:hidden mt-2"></TagBadge>
-    <button @click="signPetition()" class="md:hidden w-full mt-6 rounded-md border-0 bg-teal-600 text-slate-200 focus:ring-2 focus:ring-teal-400 hover:bg-teal-500 text-sm font-medium py-1 px-3">Sign this petition</button>
+    <button v-if="!hasSigned" @click="signPetition()" class="md:hidden w-full mt-6 rounded-md border-0 bg-teal-600 text-slate-200 focus:ring-2 focus:ring-teal-400 hover:bg-teal-500 text-sm font-medium py-1 px-3">Sign this petition</button>
 
     <div id="petition-content" class="pt-4 md:p-1">
         <p class="text-slate-900 dark:text-slate-200 mb-4 md:font-light">{{ "By " + petition.properties.author }}</p>
@@ -65,6 +65,7 @@ export default {
             },
 
             signatories: { items: [] },
+            hasSigned: false,
         }
     },
 
@@ -74,13 +75,15 @@ export default {
                 { method: "POST", headers: { Email: "test@example.com" } }
             )
                 .then(response => response.json())
-                .then(data => this.signatories.items.unshift(data));
+                .then(data => {
+                    this.signatories.items.unshift(data);
+                    this.hasSigned = true;
+                });
         },
 
         getPercentage() {
             if (this.petition.signature_target == 0) return 100;
-
-            console.log(this.signatories.items);
+            
             return 100 * this.signatories.items.length / this.petition.properties.signature_target;
         }
     },
@@ -92,7 +95,10 @@ export default {
 
         fetch("https://cloudmodule-414213.oa.r.appspot.com/_ah/api/tinyPetApi/ca-marche-sur-mon-pc/petitionSignatories/" + this.$route.params.petitionId)
             .then(response => response.json())
-            .then(data => this.signatories = data);
+            .then(data => {
+                this.signatories = data;
+                this.hasSigned = this.signatories.items.find(sgt => sgt.properties.user == "test@example.com") != undefined;
+            });
     }
 }
 </script>
