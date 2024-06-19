@@ -9,10 +9,11 @@
         </RouterLink>
       </div>
       <div class="flex md:hidden ml-auto">
-        <!-- To replace with google connection when implemented -->
-        <button type="button" @click="goToProfile()" class="-m-2.5 inline-flex items-center justify-center rounded-md p-2.5 text-slate-900 dark:text-slate-200">
+        <GoogleSignInButton v-if="connectionToken == null" @success="handleLoginSuccess" @error="handleLoginError" class="overflow-hidden text-ellipsis whitespace-nowrap max-w-40 rounded-lg border border-zinc-300"/>
+        <button v-else type="button" @click="goToProfile()" class="-m-2.5 inline-flex items-center justify-center rounded-md p-2.5 text-slate-900 dark:text-slate-200">
           <span class="sr-only">Go to profile page</span>
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="size-9">
+          <img v-if="avatarUrl != null" :src="avatarUrl" class="size-9 rounded-full">
+          <svg v-else xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="size-9">
             <path fill-rule="evenodd" d="M18.685 19.097A9.723 9.723 0 0 0 21.75 12c0-5.385-4.365-9.75-9.75-9.75S2.25 6.615 2.25 12a9.723 9.723 0 0 0 3.065 7.097A9.716 9.716 0 0 0 12 21.75a9.716 9.716 0 0 0 6.685-2.653Zm-12.54-1.285A7.486 7.486 0 0 1 12 15a7.486 7.486 0 0 1 5.855 2.812A8.224 8.224 0 0 1 12 20.25a8.224 8.224 0 0 1-5.855-2.438ZM15.75 9a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0Z" clip-rule="evenodd" />
           </svg>
         </button>
@@ -35,11 +36,12 @@
             </div>
           </div>
         </div>
-        <div class="hidden md:flex lg:flex-1 lg:justify-end my-auto">
-          <!-- To replace with google connection when implemented -->
-          <button type="button" @click="goToProfile()" class="-m-2.5 inline-flex items-center justify-center rounded-md p-2.5 text-slate-900 dark:text-slate-200">
+        <div class="hidden md:flex lg:flex-1 lg:justify-end my-auto items-center">
+          <GoogleSignInButton v-if="connectionToken == null" @success="handleLoginSuccess" @error="handleLoginError" class="max-h-9" />
+          <button v-else type="button" @click="goToProfile()" class="-m-2.5 inline-flex items-center justify-center rounded-md p-2.5 text-slate-900 dark:text-slate-200">
             <span class="sr-only">Go to profile page</span>
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="size-9">
+            <img v-if="avatarUrl != null" :src="avatarUrl" class="size-9 rounded-full">
+            <svg v-else xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="size-9">
               <path fill-rule="evenodd" d="M18.685 19.097A9.723 9.723 0 0 0 21.75 12c0-5.385-4.365-9.75-9.75-9.75S2.25 6.615 2.25 12a9.723 9.723 0 0 0 3.065 7.097A9.716 9.716 0 0 0 12 21.75a9.716 9.716 0 0 0 6.685-2.653Zm-12.54-1.285A7.486 7.486 0 0 1 12 15a7.486 7.486 0 0 1 5.855 2.812A8.224 8.224 0 0 1 12 20.25a8.224 8.224 0 0 1-5.855-2.438ZM15.75 9a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0Z" clip-rule="evenodd" />
             </svg>
           </button>
@@ -50,12 +52,21 @@
 </template>
 
 <script>
+import { GoogleSignInButton } from 'vue3-google-signin';
+import VueJwtDecode from 'vue-jwt-decode';
+
 export default {
   name: 'NavigationBar',
+  components: {
+    GoogleSignInButton
+  },
 
   data() {
     return {
       searchedTags: "",
+      connectionToken: null,
+      email: null,
+      avatarUrl: null,
     };
   },
 
@@ -68,7 +79,32 @@ export default {
 
     goToProfile() {
       this.$router.push({ name: "profile" });
+    },
+
+    handleLoginSuccess(response) {
+      let decodedToken = VueJwtDecode.decode(response.credential);
+
+      this.connectionToken = response.credential;
+      this.email = decodedToken.email;
+      this.avatarUrl = decodedToken.picture;
+
+      localStorage.setItem("TinyPetGoogleToken", this.connectionToken);
+      localStorage.setItem("TinyPetEmail", this.email);
+      localStorage.setItem("TinyPetAvatarUrl", this.avatarUrl);
+    },
+
+    handleLoginError() {
+      alert("Connection with google failed!");
     }
+  },
+
+  mounted() {
+    // These will be null if they do not exist.
+    // In the case these are null, we will display the google connection button. Otherwise we will
+    // display the avatar, or the base placeholder if the account doesn't have an avatar.
+    this.connectionToken = localStorage.getItem("TinyPetGoogleToken");
+    this.email = localStorage.getItem("TinyPetEmail");
+    this.avatarUrl = localStorage.getItem("TinyPetAvatarUrl");
   }
 }
 </script>

@@ -23,7 +23,7 @@
     <div class="flex justify-between">
         <h1 :class="{ 'mt-7 text-2xl font-bold text-slate-900 dark:text-slate-200 md:text-3xl': true, 'md:mt-0': tags.length > 0 }">{{ title }}</h1>
         <div class="hidden md:flex my-auto">
-            <button v-for="action in actions" :key="action" @click="action.trigger" class="ml-2 rounded-md border-0 bg-teal-600 text-slate-200 focus:ring-2 focus:ring-teal-400 hover:bg-teal-500 font-medium text-base py-1.5 px-4">
+            <button v-for="action in actions" :key="action" :disabled="action.disabled" @click="action.trigger" class="ml-2 rounded-md border-0 bg-teal-600 text-slate-200 enabled:focus:ring-2 enabled:focus:ring-teal-400 enabled:hover:bg-teal-500 font-medium text-base py-1.5 px-4 disabled:opacity-75 disabled:text-slate-300 disabled:bg-teal-700">
                 {{ action.label }}
             </button>
         </div>

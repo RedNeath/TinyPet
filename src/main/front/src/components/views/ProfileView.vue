@@ -44,6 +44,7 @@
 </template>
 
 <script>
+import VueJwtDecode from 'vue-jwt-decode';
 import PageStarter from '../PageStarter.vue';
 import TagBadge from '../TagBadge.vue';
 
@@ -56,7 +57,7 @@ export default {
 
     data() {
         return {
-            username: "test@example.com",
+            username: "",
             petitionsSigned: [],
         }
     },
@@ -68,6 +69,12 @@ export default {
     },
 
     mounted() {
+        if (localStorage.getItem("TinyPetGoogleToken") == null)
+            this.$router.push({ name: 'home '});
+        let decodedToken = VueJwtDecode.decode(localStorage.getItem("TinyPetGoogleToken"));
+
+        this.username = decodedToken.given_name + "_" + decodedToken.family_name + "_<" + decodedToken.email + ">";
+
         fetch("https://cloudmodule-414213.oa.r.appspot.com/_ah/api/tinyPetApi/ca-marche-sur-mon-pc/petitionsSignedByUser/" + this.username)
             .then(response => response.json())
             .then(data => this.petitionsSigned = data.items);

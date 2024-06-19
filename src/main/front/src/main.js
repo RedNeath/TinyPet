@@ -1,5 +1,6 @@
 import { createApp } from 'vue'
 import { createMemoryHistory, createRouter } from 'vue-router';
+import GoogleSignInPlugin from 'vue3-google-signin';
 
 import App from './App.vue'
 import RecentPetitionsView from './components/views/RecentPetitionsView.vue'
@@ -24,4 +25,5 @@ const router = createRouter({
 
 createApp(App)
     .use(router)
+    .use(GoogleSignInPlugin, { clientId: '440998180387-r3rk5d6lbn3h9u1dksplncu8fdrdqctl.apps.googleusercontent.com', })
     .mount('#app')

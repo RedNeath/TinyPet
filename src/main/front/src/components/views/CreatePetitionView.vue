@@ -93,12 +93,17 @@ export default {
             if (this.incorrectSubmit) return;
 
             fetch("https://cloudmodule-414213.oa.r.appspot.com/_ah/api/tinyPetApi/ca-marche-sur-mon-pc/createPetition",
-                { method: "POST", headers: { Email: "test@example.com" }, body: JSON.stringify(this.petition) }
+                { method: "POST", headers: { Authorization: localStorage.getItem("TinyPetGoogleToken") }, body: JSON.stringify(this.petition) }
             )
                 .then(response => response.json())
                 .then(data => this.$router.push({ name: 'petition', params: { petitionId: data.key.id }}))
             ;
         },
     },
+
+    mounted() {
+        if (localStorage.getItem("TinyPetGoogleToken") == null)
+            this.$router.push({ name: "home" });
+    }
 }
 </script>

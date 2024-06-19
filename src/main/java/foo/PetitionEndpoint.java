@@ -21,7 +21,7 @@ import com.google.appengine.api.datastore.Query;
 import com.google.appengine.api.datastore.Query.SortDirection;
 import com.google.appengine.api.datastore.Query.FilterOperator;
 import com.google.appengine.api.datastore.Query.FilterPredicate;
-
+import com.google.api.auth.UnauthenticatedException;
 import com.google.api.server.spi.config.Api;
 import com.google.api.server.spi.config.ApiMethod;
 import com.google.api.server.spi.config.ApiNamespace;
@@ -50,10 +50,11 @@ public class PetitionEndpoint {
 		Calendar cal = Calendar.getInstance(); 
 		cal.add(Calendar.MONTH, 6);
 		Date endDate = cal.getTime();
-		String email = request.getHeader("Email");
+		Identity identity = AuthenticationVerifier.verifyToken(request.getHeader("Authorization"));
+		if (identity == null) throw new UnauthenticatedException();
 
 		Entity petition = new Entity("Petition");
-		petition.setProperty("author", email);
+		petition.setProperty("author", identity.username);
 		petition.setProperty("name", petitionCreate.name);
 		petition.setProperty("description", petitionCreate.description);
 		petition.setProperty("signature_target", petitionCreate.signatureTarget);
@@ -130,15 +131,13 @@ public class PetitionEndpoint {
 
 	@ApiMethod(name="signPetition", httpMethod=HttpMethod.POST)
 	public Entity signPetition(@Named("petition") long petition, HttpServletRequest request) {
-		// Has to be connected via google!
-		// Payload payload = ...
-		String email = request.getHeader("Email");
+		Identity identity = AuthenticationVerifier.verifyToken(request.getHeader("Authorization"));
+		if (identity == null) throw new UnauthenticatedException();
 
 		Entity signature = new Entity("Signature");
 		signature.setProperty("date", new Date());
 		signature.setProperty("petition", petition);
-		// signature.setProperty("user", payload.getEmail());
-		signature.setProperty("user", email);
+		signature.setProperty("user", identity.username);
 
 		DatastoreService datastoreService = DatastoreServiceFactory.getDatastoreService();
 		Transaction transaction = datastoreService.beginTransaction();
