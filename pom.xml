@@ -118,6 +118,11 @@
               <filtering>true</filtering>
               <targetPath>WEB-INF</targetPath>
             </resources>
+            <resources>
+              <directory>${basedir}/src/main/front/dist/</directory>
+              <filtering>true</filtering>
+              <targetPath>dist/</targetPath>
+            </resources>
           </webResources>
         </configuration>
       </plugin>
