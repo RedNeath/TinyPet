@@ -1,3 +1,29 @@
+## Membres du groupe :
+- LEAU Camille
+- BOURRY Théandre
+
+## Screenshots des kinds google datastore
+- Signature
+![image](https://github.com/RedNeath/TinyPet/assets/56296654/cbf462d1-3dee-484b-824c-100f626dfd7e)
+- Petition
+![image](https://github.com/RedNeath/TinyPet/assets/56296654/7bcb84b6-5d15-4b1c-8c80-04def5d7f0bf)
+
+## Etat de l'application
+Ce qui marche :
+- Créer une pétition
+- Signer une pétition
+- Lister les pétitions signées par un utilisateur et triées par date
+- Lister le top 100 des pétitions trié par date
+- Lister le top 100 des pétitions en fonction d’un ou plusieurs “tag(s)”, trié par date de création
+- Afficher tous les signataires d’une pétition.
+- Une interface ergonomique (responsive & thème clair/sombre)
+
+Ce qui ne marche pas :
+- A priori rien
+
+
+
+---
 # fast install
 
 * precondition: you have a GCP project selected with billing activated. 
